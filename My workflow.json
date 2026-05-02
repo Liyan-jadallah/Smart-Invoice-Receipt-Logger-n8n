@@ -1,0 +1,848 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Smart Invoice & Receipt Logger",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "client_name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "client_email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "document_type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Receipt"
+                  },
+                  {
+                    "option": "Invoice"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "upload_document",
+              "fieldType": "file",
+              "acceptFileTypes": ".jpg, .jpeg, .png, .pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1776,
+        -96
+      ],
+      "id": "37049233-d8bf-4951-bad3-c27963499ca4",
+      "name": "On form submission",
+      "webhookId": "acbe8812-63c0-4be1-b8c9-aa2023dab5f6"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "upload_document",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1392,
+        48
+      ],
+      "id": "e85ead02-0b5c-44fa-98ec-4501251db8dc",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yPyDGs8wvvieNuce",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('On form submission').item.json.document_type }}",
+                    "rightValue": "Invoice",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d3d259d7-8dd7-4e28-83ac-5f970e3f3ad6"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "0"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "32a33e0f-254c-4f03-b07c-ecdb1c1589e9",
+                    "leftValue": "={{ $('On form submission').item.json.document_type }}",
+                    "rightValue": "Receipt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -768,
+        64
+      ],
+      "id": "5ccf9983-a569-451e-9ce3-f6baf783e37c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8",
+          "mode": "list",
+          "cachedResultName": "Smart Invoice & Receipt Logger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1313657923,
+          "mode": "list",
+          "cachedResultName": "Invoices (AR)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit#gid=1313657923"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "subtotal": "={{ $json.subtotal }}",
+            "items": "={{ $json.items }}",
+            "tax": "={{ $json.tax }}",
+            "total_amount": "={{ $json.total_amount }}",
+            "invoice_id": "={{ $json.invoice_id }}",
+            "date": "={{ $json.date }}",
+            "client_name": "={{ $json.client_name }}",
+            "client_email": "={{ $('On form submission').item.json.client_email }}",
+            "logged_at": "={{ $now }}",
+            "photo_link": "={{ $json.webViewLink }}",
+            "due_date": "={{ $('Code in JavaScript').item.json.due_date }}",
+            "email_sent": "FALSE"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "client_email",
+              "displayName": "client_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "items",
+              "displayName": "items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tax",
+              "displayName": "tax",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_amount",
+              "displayName": "total_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "photo_link",
+              "displayName": "photo_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_sent",
+              "displayName": "email_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "logged_at",
+              "displayName": "logged_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -768,
+        -112
+      ],
+      "id": "8d106832-3ff4-4d3f-aeda-beac074038f0",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MOm8P2ro9R1JNLLV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map(item => {\n  const rawText =\n    item.json.text ||\n    item.json.output ||\n    item.json.response ||\n    item.json.message?.content ||\n    \"\";\n\n  const cleanedText = String(rawText)\n    .replace(/```json/g, \"\")\n    .replace(/```/g, \"\")\n    .trim();\n\n  let parsed;\n  try {\n    parsed = JSON.parse(cleanedText);\n  } catch (error) {\n    throw new Error(`Failed to parse LLM output as JSON. Raw output: ${cleanedText}`);\n  }\n\n  return {\n    json: parsed\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1008,
+        -240
+      ],
+      "id": "864c63c2-b61d-4d94-a3b3-80f5cd074846",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8",
+          "mode": "list",
+          "cachedResultName": "Smart Invoice & Receipt Logger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 58066785,
+          "mode": "list",
+          "cachedResultName": "Expenses (AP)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit#gid=58066785"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "photo_link": "={{ $('Upload file').item.json.webViewLink }}",
+            "payment_method": "={{ $('Code in JavaScript').item.json.payment_method }}",
+            "total_amount": "={{ $('Code in JavaScript').item.json.total_amount }}",
+            "tax": "={{ $('Code in JavaScript').item.json.tax }}",
+            "subtotal": "={{ $('Code in JavaScript').item.json.subtotal }}",
+            "items": "={{ $('Code in JavaScript').item.json.items }}",
+            "vendor_name": "={{ $('Code in JavaScript').item.json.vendor_name }}",
+            "date": "={{ $('Code in JavaScript').item.json.date }}",
+            "receipt_id": "={{ $('Code in JavaScript').item.json.receipt_id }}",
+            "logged_at": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "receipt_id",
+              "displayName": "receipt_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vendor_name",
+              "displayName": "vendor_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "items",
+              "displayName": "items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tax",
+              "displayName": "tax",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_amount",
+              "displayName": "total_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "photo_link",
+              "displayName": "photo_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "logged_at",
+              "displayName": "logged_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -544,
+        80
+      ],
+      "id": "70e4901d-b739-484d-8735-fc4ceaf17272",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MOm8P2ro9R1JNLLV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.client_email }}",
+        "subject": "=Your Invoice {{ $('Code in JavaScript').item.json.invoice_id }}",
+        "message": "=<p>Hello {{ $('Code in JavaScript').item.json.client_name }},</p>\n\n<p>Please find your invoice details below:</p>\n\n<ul>\n  <li><strong>Invoice ID:</strong> {{ $('Code in JavaScript').item.json.invoice_id }}</li>\n  <li><strong>Date:</strong> {{ $('Code in JavaScript').item.json.date }}</li>\n  <li><strong>Items:</strong> {{ $('Code in JavaScript').item.json.items }}</li>\n  <li><strong>Subtotal:</strong> {{ $('Code in JavaScript').item.json.subtotal }}</li>\n  <li><strong>Tax:</strong> {{ $('Code in JavaScript').item.json.tax }}</li>\n  <li><strong>Total Amount:</strong> {{ $('Code in JavaScript').item.json.total_amount }}</li>\n  <li><strong>Due Date:</strong> {{ $('Code in JavaScript').item.json.due_date }}</li>\n</ul>\n\n<p>You can view the uploaded invoice here:</p>\n<p><a href=\"{{ $('Upload file').item.json.webViewLink }}\">Open Invoice File</a></p>\n\n<p>Thank you.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -576,
+        -112
+      ],
+      "id": "420a35b3-2e8b-4c41-9193-cb98934066fb",
+      "name": "Send a message",
+      "webhookId": "37ccb78c-18a5-413c-99d3-7e12b142fc9e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FkumuqBmUQ2bLEHi",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1056,
+        64
+      ],
+      "id": "0e3c0be6-71d9-4895-8e96-849d12c88322",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8",
+          "mode": "list",
+          "cachedResultName": "Smart Invoice & Receipt Logger",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1313657923,
+          "mode": "list",
+          "cachedResultName": "Invoices (AR)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11hyyzhbYfEoOjKSAlaz9VjhhsDLzsmdC8UgH8d3rES8/edit#gid=1313657923"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email_sent": "TRUE",
+            "invoice_id": "={{ $('Code in JavaScript').item.json.invoice_id }}"
+          },
+          "matchingColumns": [
+            "invoice_id"
+          ],
+          "schema": [
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "client_email",
+              "displayName": "client_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "items",
+              "displayName": "items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tax",
+              "displayName": "tax",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_amount",
+              "displayName": "total_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "photo_link",
+              "displayName": "photo_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_sent",
+              "displayName": "email_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "logged_at",
+              "displayName": "logged_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "17ffa37a-31a6-4636-bd8b-14d738b4be07",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MOm8P2ro9R1JNLLV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an accounting data extraction assistant.\n\nYour task is to extract structured financial data from the provided document text.\n\nThe document type will be either:\n- Invoice\n- Receipt\n\nRules:\n1. Return ONLY valid JSON.\n2. Do not include markdown.\n3. Do not include explanations.\n4. If a field is missing, unreadable, or uncertain, return \"N/A\".\n5. Preserve numbers exactly as written when possible.\n6. Dates must stay exactly as found in the text.\n7. Items must be returned as a comma-separated string.\n8. If the document is an invoice, return the invoice schema.\n9. If the document is a receipt, return the receipt schema.\n10. If document type is unclear, infer it from the text content.\n11. Currency is assumed to be JOD unless another currency is explicitly written.\n12. Output must contain all fields of the matching schema.\n\nInvoice JSON schema:\n{\n  \"document_type\": \"Invoice\",\n  \"invoice_id\": \"\",\n  \"date\": \"\",\n  \"client_name\": \"\",\n  \"items\": \"\",\n  \"subtotal\": \"\",\n  \"tax\": \"\",\n  \"total_amount\": \"\",\n  \"due_date\": \"\"\n}\n\nReceipt JSON schema:\n{\n  \"document_type\": \"Receipt\",\n  \"receipt_id\": \"\",\n  \"date\": \"\",\n  \"vendor_name\": \"\",\n  \"items\": \"\",\n  \"subtotal\": \"\",\n  \"tax\": \"\",\n  \"total_amount\": \"\",\n  \"payment_method\": \"\"\n}\n\nNow extract the data from this document text:\n{{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary",
+              "binaryImageDataKey": "upload_document"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1376,
+        -240
+      ],
+      "id": "49e0d325-ee0c-4c89-8a0d-69867941f5d0",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1392,
+        -400
+      ],
+      "id": "b5a485d2-c8f7-47d8-95a2-72801829ec8c",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "UddmY8t5MOBNNmKa",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a0492e49-f155-4544-b642-32c412800f24",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "24238bfb7df5149a1e8e06b4f4cf72b65b75f3d78d372a4522fd121ca58ca62f"
+  },
+  "id": "l2EGTmkHqZ45hbfi",
+  "tags": []
+}
