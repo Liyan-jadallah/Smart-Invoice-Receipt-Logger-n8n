@@ -1,52 +1,3 @@
-تفضلي يا ليان، هذا هو النص الكامل والمرتب بدون النجوم (البولد) وبدون مراجع الـ cite البرمجية، ليكون جاهزاً للنسخ واللصق مباشرة في ملف README.md الخاص بكِ:
-Smart Invoice & Receipt Logger (n8n + AI) 🚀
-
-مشروع أتمتة متكامل لاستقبال ومعالجة الفواتير والوصولات تلقائياً باستخدام منصة n8n وتقنيات الذكاء الاصطناعي، بهدف إلغاء الإدخال اليدوي للبيانات وتقليل الأخطاء البشرية.
-نظرة عامة على الإنجاز
-
-تم تصميم وبناء الـ Workflow بالكامل على منصة n8n لضمان مسار بيانات سلس وآمن، يبدأ من لحظة رفع المستند وينتهي بأرشفته وتسجيل بياناته وإخطار المعنيين.
-الشغل الذي تم إنجازه تقنياً:
-
-    نقطة البداية (Form Submission): إنشاء نموذج لاستقبال البيانات والملفات المرفوعة مباشرة.
-
-    إدارة الملفات: ربط مسار رفع الملفات (Google Drive) لضمان أرشفة المستندات برمجياً.
-
-    الذكاء الاصطناعي (AI/OCR): تجهيز منطق استخراج البيانات الهيكلية من الصور والملفات بدقة باستخدام AI Vision.
-
-    معالجة البيانات (Code Node): كتابة كود JavaScript لتنظيف المخرجات وتحويلها لصيغة JSON مرتبة قابلة للتخزين.
-
-    دمج البيانات (Merge): دمج بيانات الملف الأصلية مع البيانات المستخرجة من الذكاء الاصطناعي في تدفق واحد.
-
-    توجيه المسارات (Switch Node): بناء منطق يفرق تلقائياً بين نوع المستند (Invoice أو Receipt) لتوجيهه للمسار الصحيح.
-
-    التسجيل المحاسبي (Google Sheets): تجهيز خطوات إضافة البيانات إلى الجداول المخصصة (AR/AP).
-
-    الأتمتة البريدية (Gmail): إعداد مسار إرسال إيميلات تلقائية للفواتير وتحديث حالة الإرسال في الجداول.
-
-التكنولوجيا المستخدمة (Stack)
-
-    n8n: محرك الأتمتة الأساسي.
-
-    Google Gemini / AI Vision: لاستخراج البيانات نصياً وصورياً.
-
-    Google Sheets & Drive: لتخزين البيانات والأرشفة السحابية.
-
-    Gmail: للتواصل التلقائي مع العملاء.
-
-متطلبات التشغيل والربط النهائي
-
-بما أن التصميم والمنطق جاهز 100%، يحتاج النظام فقط لربط الحسابات الرسمية للشركة (Credentials) ليدخل حيز التنفيذ:
-
-    استيراد الـ Workflow: رفع ملف الـ JSON المرفق إلى n8n.
-
-    ربط Google Drive: في نود رفع الملفات لتحديد مجلد الحفظ.
-
-    ربط Google Sheets: في نودز الإضافة والتحديث (Append/Update).
-
-    ربط Gmail: في نود الإرسال لتحديد بريد الشركة المرسل.
-
-    تفعيل خدمة AI: إضافة الـ API Key الخاص بالشركة لتفعيل الاستخراج التلقائي.
-
 Smart Invoice & Receipt Logger (n8n + AI) 🚀
 
 A comprehensive automation project designed to receive and process invoices and receipts automatically using the n8n platform and AI technologies, aiming to eliminate manual data entry and reduce human error.
@@ -92,5 +43,6 @@ The logic and design are 100% complete; the system only requires connecting the 
     Connect Google Sheets: In the append/update nodes.
 
     Connect Gmail: In the send message node to define the sender's email.
+    
 
     Activate AI Service: Add the company's API Key for automated data extraction
