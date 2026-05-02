@@ -43,6 +43,8 @@ The logic and design are 100% complete; the system only requires connecting the 
     Connect Google Sheets: In the append/update nodes.
 
     Connect Gmail: In the send message node to define the sender's email.
-    
+    <img width="1920" height="827" alt="image" src="https://github.com/user-attachments/assets/f0764ef9-6429-4135-8218-d7b99f85c629" />
+
 
     Activate AI Service: Add the company's API Key for automated data extraction
+تنميبؤبيؤربر
